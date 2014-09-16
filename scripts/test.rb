@@ -60,6 +60,11 @@ begin
   )
 
   pp JSON.parse(build.get(path: '/jobs').body)
+
+  puts "waiting for the job to finish"
+  sleep 15
+
+  pp JSON.parse(inventory.get(path: '/inventory').body)
 rescue Excon::Errors::HTTPStatusError
   puts $!.response.body
   raise
