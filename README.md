@@ -12,3 +12,5 @@ forego start
 ```
 
 ## Example
+
+ruby script/test.rb
