@@ -2,7 +2,7 @@ Spacebox is designed as an MMO to be hosted on servers. This is a repo to help y
 
 ## Getting Started
 
-You'll need either forman or [forego](https://github.com/ddollar/forego) installed.
+You'll need nodejs either forman or [forego](https://github.com/ddollar/forego) installed.
 
 ```
 cp env.sample .env
