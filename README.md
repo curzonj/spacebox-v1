@@ -14,5 +14,6 @@ forego start
 ## Example
 
 ```
+bundle install
 ruby script/test.rb
 ```
