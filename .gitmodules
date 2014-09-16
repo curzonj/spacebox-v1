@@ -1,0 +1,15 @@
+[submodule "3dsim"]
+	path = 3dsim
+	url = git@github.com:curzonj/threejs1.git
+[submodule "auth"]
+	path = auth
+	url = git@github.com:curzonj/spacebox-auth.git
+[submodule "build"]
+	path = build
+	url = git@github.com:curzonj/spacebox-build.git
+[submodule "inventory"]
+	path = inventory
+	url = git@github.com:curzonj/spacebox-inventory.git
+[submodule "tech"]
+	path = tech
+	url = git@github.com:curzonj/spacebox-tech.git
