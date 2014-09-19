@@ -5,32 +5,31 @@ require 'pp'
 METAL_UUID="f9e7e6b4-d5dc-4136-a445-d3adffc23bc6"
 FACTORY_UUID="d9c166f0-3c6d-11e4-801e-d5aa4697630f"
 
-spodb = Excon.new('http://localhost:5100', :persistent => true)
-inventory = Excon.new('http://localhost:5400', :persistent => true)
-build = Excon.new('http://localhost:5300', :persistent => true)
+inventory = Excon.new('http://localhost:5400', persistent: true)
+build = Excon.new('http://localhost:5300', persistent: true)
 
 begin
-  obj = {
-    type: "structure",
-    blueprint: FACTORY_UUID,
-    name: "factory"
-  }
 
-  uuid = spodb.post(
-    path: '/spodb',
-    body: obj.to_json,
-    headers: { "Content-Type" => "application/json" }
-  ).body
-
-  puts uuid
-
-  pp JSON.parse(spodb.get(path: '/spodb').body)
+  uuid = "toy-factory"
 
   inventory.post(
-    path: "/inventory/#{uuid}/default",
-    body: { type: METAL_UUID, quantity: 35 }.to_json,
+    path: '/containers/toy-factory',
+    body: { blueprint: FACTORY_UUID }.to_json,
+    headers: { "Content-Type" => "application/json" }
+  )
+
+  pp JSON.parse(inventory.get(path: '/inventory').body)
+
+  inventory.post(
+    path: "/inventory",
+    body: [{
+      inventory: uuid,
+      slice: "default",
+      blueprint: METAL_UUID,
+      quantity: 35
+    }].to_json,
     headers: { "Content-Type" => "application/json" },
-    expects: [ 200 ]
+    expects: [ 204 ]
   )
 
   pp JSON.parse(inventory.get(path: '/inventory').body)
