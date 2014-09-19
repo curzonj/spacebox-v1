@@ -14,10 +14,19 @@ begin
 
   uuid = "toy-factory"
 
+  # TODO spodb should do this
   inventory.post(
     path: '/containers/toy-factory',
     body: { blueprint: FACTORY_UUID }.to_json,
     headers: { "Content-Type" => "application/json" }
+  )
+
+  # TODO spodb should do this
+  build.post(
+    path: "/facilities/toy-factory",
+    body: { blueprint: FACTORY_UUID }.to_json,
+    headers: { "Content-Type" => "application/json" },
+    expects: [ 201 ]
   )
 
   pp JSON.parse(inventory.get(path: '/inventory').body)
@@ -35,17 +44,6 @@ begin
   )
 
   pp JSON.parse(inventory.get(path: '/inventory').body)
-
-  # TODO spodb should do this
-  build.post(
-    path: "/facilities",
-    body: {
-      uuid: uuid,
-      blueprint: FACTORY_UUID
-    }.to_json,
-    headers: { "Content-Type" => "application/json" },
-    expects: [ 201 ]
-  )
 
   build.post(
     path: "/jobs",
