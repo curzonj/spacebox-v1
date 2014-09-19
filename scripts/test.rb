@@ -4,6 +4,8 @@ require 'pp'
 
 METAL_UUID="f9e7e6b4-d5dc-4136-a445-d3adffc23bc6"
 FACTORY_UUID="d9c166f0-3c6d-11e4-801e-d5aa4697630f"
+FIGHTER_UUID="6e573ecc-557b-4e05-9f3b-511b2611c474"
+SCAFFOLD_UUID='ffb74468-7162-4bfb-8a0e-a8ae72ef2a8b'
 
 inventory = Excon.new('http://localhost:5400', persistent: true)
 build = Excon.new('http://localhost:5300', persistent: true)
@@ -51,7 +53,7 @@ begin
       facility: uuid,
       action: "manufacture",
       quantity: 1,
-      target: 'ffb74468-7162-4bfb-8a0e-a8ae72ef2a8b',
+      target: FIGHTER_UUID,
       inventory: 'default'
     }.to_json,
     headers: { "Content-Type" => "application/json" },
@@ -61,7 +63,7 @@ begin
   pp JSON.parse(build.get(path: '/jobs').body)
 
   puts "waiting for the job to finish"
-  sleep 15
+  sleep 35
 
   pp JSON.parse(inventory.get(path: '/inventory').body)
 rescue Excon::Errors::HTTPStatusError
