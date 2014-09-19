@@ -7,18 +7,45 @@ FACTORY_UUID="d9c166f0-3c6d-11e4-801e-d5aa4697630f"
 FIGHTER_UUID="6e573ecc-557b-4e05-9f3b-511b2611c474"
 SCAFFOLD_UUID='ffb74468-7162-4bfb-8a0e-a8ae72ef2a8b'
 
+auth = Excon.new('http://localhost:5200', persistent: true)
 inventory = Excon.new('http://localhost:5400', persistent: true)
 build = Excon.new('http://localhost:5300', persistent: true)
 
-begin
+def basic_auth(user, password)
+  'Basic ' << ['' << user.to_s << ':' << password.to_s].pack('m').delete(Excon::CR_NL)
+end
 
+begin
   uuid = "toy-factory"
+
+  resp = JSON.parse(auth.post(
+    path: '/accounts',
+    body: { secret: "bob" }.to_json,
+    headers: { "Content-Type" => "application/json" },
+    expects: 200
+  ).body)
+
+  pp resp
+
+  resp = JSON.parse(auth.get(
+    path: '/auth',
+    headers: {
+      # We have to do this because the basic auth credentials are only for this endpoint
+      "Authorization" => basic_auth(resp['account'], 'bob'),
+      "Content-Type" => "application/json"
+    },
+    expects: 200
+  ).body)
+
+  pp resp
+  auth_token = resp['token']
 
   # TODO spodb should do this
   inventory.post(
     path: '/containers/toy-factory',
     body: { blueprint: FACTORY_UUID }.to_json,
-    headers: { "Content-Type" => "application/json" }
+    headers: { "Content-Type" => "application/json" },
+    expects: 204
   )
 
   # TODO spodb should do this
@@ -26,10 +53,14 @@ begin
     path: "/facilities/toy-factory",
     body: { blueprint: FACTORY_UUID }.to_json,
     headers: { "Content-Type" => "application/json" },
-    expects: [ 201 ]
+    expects: 201
   )
 
-  pp JSON.parse(inventory.get(path: '/inventory').body)
+  pp JSON.parse(inventory.get(
+    path: '/inventory',
+    headers: { "Authorization" => "Bearer #{auth_token}"},
+    expects: 200
+  ).body)
 
   inventory.post(
     path: "/inventory",
@@ -40,10 +71,14 @@ begin
       quantity: 35
     }].to_json,
     headers: { "Content-Type" => "application/json" },
-    expects: [ 204 ]
+    expects: 204
   )
 
-  pp JSON.parse(inventory.get(path: '/inventory').body)
+  pp JSON.parse(inventory.get(
+    path: '/inventory',
+    headers: { "Authorization" => "Bearer #{auth_token}"},
+    expects: 200
+  ).body)
 
   build.post(
     path: "/jobs",
@@ -55,7 +90,7 @@ begin
       inventory: 'default'
     }.to_json,
     headers: { "Content-Type" => "application/json" },
-    expects: [ 201 ]
+    expects: 201
   )
 
   pp JSON.parse(build.get(path: '/jobs').body)
@@ -63,7 +98,12 @@ begin
   puts "waiting for the job to finish"
   sleep 35
 
-  pp JSON.parse(inventory.get(path: '/inventory').body)
+  pp JSON.parse(inventory.get(
+    path: '/inventory',
+    headers: { "Authorization" => "Bearer #{auth_token}"},
+    expects: 200
+  ).body)
+
 rescue Excon::Errors::HTTPStatusError
   puts $!.response.body
   raise
