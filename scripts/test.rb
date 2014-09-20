@@ -17,60 +17,45 @@ begin
   resp = JSON.parse(auth.post(
     path: '/accounts',
     body: {
-    secret: "bob",
-    privileged: true # a privileged account means we are part of the game itself
-  }.to_json,
+      secret: "bob",
+      #privileged: true # a privileged account means we are part of the game itself
+    }.to_json,
     headers: { "Content-Type" => "application/json" },
     expects: 200
   ).body)
-
-  pp resp
 
   resp = JSON.parse(auth.get(
     path: '/auth',
     headers: {
     # We have to do this because the basic auth credentials are only for this endpoint
-    "Authorization" => basic_auth(resp['account'], 'bob'),
-    "Content-Type" => "application/json"
-  },
+      "Authorization" => basic_auth(resp['account'], 'bob'),
+      "Content-Type" => "application/json"
+    },
     expects: 200
   ).body)
 
-  pp resp
   auth_token = resp['token']
 
   build = Excon.new('http://localhost:5300', persistent: true,
                         headers: { 
     "Authorization" => "Bearer #{auth_token}",
     "Content-Type" => "application/json"
-  }, debug: true)
+  })
 
   inventory = Excon.new('http://localhost:5400', persistent: true,
                         headers: { 
     "Authorization" => "Bearer #{auth_token}",
     "Content-Type" => "application/json"
-  }, debug: true)
+  })
 
-  uuid = "toy-factory"
+  puts build.get(path: "/setup?loadout=starter", expects: 200).body
 
-  # TODO spodb should do this
-  inventory.post(
-    path: '/containers/toy-factory',
-    body: { blueprint: FACTORY_UUID }.to_json,
-    expects: 204
-  )
+  myContainers = JSON.parse(inventory.get(path: '/inventory', expects: 200).body)
+  pp myContainers
 
-  # TODO spodb should do this
-  build.post(
-    path: "/facilities/toy-factory",
-    body: { blueprint: FACTORY_UUID }.to_json,
-    headers: { "Content-Type" => "application/json" },
-    expects: 201
-  )
+  uuid = myContainers.keys.first
 
-  pp JSON.parse(inventory.get(path: '/inventory/toy-factory', expects: 200).body)
-
-  pp JSON.parse(inventory.get(path: '/inventory', expects: 200).body)
+  pp JSON.parse(build.get(path: '/facilities', expects: 200).body)
 
   inventory.post(
     path: "/inventory",
