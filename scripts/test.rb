@@ -8,19 +8,18 @@ FIGHTER_UUID="6e573ecc-557b-4e05-9f3b-511b2611c474"
 SCAFFOLD_UUID='ffb74468-7162-4bfb-8a0e-a8ae72ef2a8b'
 
 auth = Excon.new('http://localhost:5200', persistent: true)
-inventory = Excon.new('http://localhost:5400', persistent: true)
-build = Excon.new('http://localhost:5300', persistent: true)
 
 def basic_auth(user, password)
   'Basic ' << ['' << user.to_s << ':' << password.to_s].pack('m').delete(Excon::CR_NL)
 end
 
 begin
-  uuid = "toy-factory"
-
   resp = JSON.parse(auth.post(
     path: '/accounts',
-    body: { secret: "bob" }.to_json,
+    body: {
+    secret: "bob",
+    privileged: true # a privileged account means we are part of the game itself
+  }.to_json,
     headers: { "Content-Type" => "application/json" },
     expects: 200
   ).body)
@@ -30,21 +29,34 @@ begin
   resp = JSON.parse(auth.get(
     path: '/auth',
     headers: {
-      # We have to do this because the basic auth credentials are only for this endpoint
-      "Authorization" => basic_auth(resp['account'], 'bob'),
-      "Content-Type" => "application/json"
-    },
+    # We have to do this because the basic auth credentials are only for this endpoint
+    "Authorization" => basic_auth(resp['account'], 'bob'),
+    "Content-Type" => "application/json"
+  },
     expects: 200
   ).body)
 
   pp resp
   auth_token = resp['token']
 
+  build = Excon.new('http://localhost:5300', persistent: true,
+                        headers: { 
+    "Authorization" => "Bearer #{auth_token}",
+    "Content-Type" => "application/json"
+  }, debug: true)
+
+  inventory = Excon.new('http://localhost:5400', persistent: true,
+                        headers: { 
+    "Authorization" => "Bearer #{auth_token}",
+    "Content-Type" => "application/json"
+  }, debug: true)
+
+  uuid = "toy-factory"
+
   # TODO spodb should do this
   inventory.post(
     path: '/containers/toy-factory',
     body: { blueprint: FACTORY_UUID }.to_json,
-    headers: { "Content-Type" => "application/json" },
     expects: 204
   )
 
@@ -56,11 +68,9 @@ begin
     expects: 201
   )
 
-  pp JSON.parse(inventory.get(
-    path: '/inventory',
-    headers: { "Authorization" => "Bearer #{auth_token}"},
-    expects: 200
-  ).body)
+  pp JSON.parse(inventory.get(path: '/inventory/toy-factory', expects: 200).body)
+
+  pp JSON.parse(inventory.get(path: '/inventory', expects: 200).body)
 
   inventory.post(
     path: "/inventory",
@@ -70,13 +80,11 @@ begin
       blueprint: METAL_UUID,
       quantity: 35
     }].to_json,
-    headers: { "Content-Type" => "application/json" },
     expects: 204
   )
 
   pp JSON.parse(inventory.get(
     path: '/inventory',
-    headers: { "Authorization" => "Bearer #{auth_token}"},
     expects: 200
   ).body)
 
