@@ -8,6 +8,7 @@ You'll need nodejs either forman or [forego](https://github.com/ddollar/forego) 
 cp env.sample .env
 git submodule init
 git submodule update
+for i in 3dsim auth build inventory tech; do pushd $i; npm install; popd; done
 forego start
 ```
 
