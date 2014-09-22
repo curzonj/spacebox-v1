@@ -154,6 +154,12 @@ begin
   puts "upgraded #{scaffold} to a #{ORE_MINE_UUID}"
   pp 'inventory', JSON.parse(inventory.get( path: '/inventory', expects: 200).body)
 
+  loop do
+    pp 'inventory', JSON.parse(inventory.get( path: '/inventory', expects: 200).body)
+    puts "sleeping for resources"
+    sleep 3
+  end
+
 rescue Excon::Errors::HTTPStatusError
   puts $!.response.body
   raise
