@@ -18,3 +18,9 @@ forego start
 bundle install
 ruby script/test.rb
 ```
+
+```
+cd client
+npm install
+forego run node ai.js
+```
