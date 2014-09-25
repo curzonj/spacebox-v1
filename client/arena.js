@@ -79,7 +79,7 @@ function handleMessage(message) {
             game.emit('ready');
             break;
         case "state":
-            game.world[data.state.key] = deepMerge(data.state.values, game[data.state.key]);
+            game.world[data.state.key] = deepMerge(data.state.values, game.world[data.state.key]);
 
             if (game.world[data.state.key].tombstone === true) {
                 var data_account = game.world[data.state.key].account;
@@ -88,10 +88,12 @@ function handleMessage(message) {
                     var i = game.byAccount[data_account].indexOf(data.state.key);
 
                     if (i > -1) {
-                        game.byAccount[data.state.values.account].splice(i, 1);
+                        game.byAccount[data_account].splice(i, 1);
                     }
                 } else {
                     console.log("unable to remove from account list "+data.state.key);
+                    //console.log(game.world[data.state.key]);
+                    //console.log(Object.keys(game.byAccount));
                 }
 
                 delete game.world[data.state.key];
@@ -145,8 +147,8 @@ function autoTargetEnemy() {
 
     accounts.forEach(function(uuid) {
         game.byAccount[uuid].forEach(function(key) {
-            console.log(key);
-            console.log(Object.keys(game.world));
+            //console.log(key);
+            //console.log(Object.keys(game.world));
 
             if (game.world[key].type == "spaceship") {
                 var ship = game.world[key];
@@ -154,7 +156,7 @@ function autoTargetEnemy() {
                     var done = false;
                     accounts.forEach(function (enemy) {
                         if (!done && uuid != enemy && game.byAccount[enemy].length > 0) {
-                            // TODO add orbit command
+                            cmd('orbit', { subject: key, target: game.byAccount[enemy][0] });
                             cmd('shoot', { subject: key, target: game.byAccount[enemy][0] });
                             done = true;
                         }
