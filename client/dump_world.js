@@ -111,64 +111,7 @@ function handleMessage(message) {
 
 }
 
-function cmd(name, opts) {
-    if (opts === undefined) {
-        opts = {};
-    }
-
-    opts.command = name;
-    console.log(opts);
-
-    ws.send(JSON.stringify(opts));
-}
-
-function autoSpawn() {
-    var accountList = [ clientAuth.account, "the-other-guy" ];
-    var byAccount = game.byAccount;
-
-    // TODO The accountList may not be up to date right away
-    accountList.forEach(function(account) {
-        if (byAccount[account] === undefined || byAccount[account].length === 0) {
-            cmd('spawn', { account: account });
-            cmd('spawn', { account: account });
-        } else if (byAccount[account].length < 2) {
-            cmd('spawn', { account: account });
-        }
-    });
-}
-
-function autoTargetEnemy() {
-/*    cmd('orbit', { subject: key, target: key });
-    */
-
-    var accounts = Object.keys(game.byAccount);
-
-    accounts.forEach(function(uuid) {
-        game.byAccount[uuid].forEach(function(key) {
-            console.log(key);
-            console.log(Object.keys(game.world));
-
-            if (game.world[key].type == "spaceship") {
-                var ship = game.world[key];
-                if (ship.weapon.state != 'shoot') {
-                    var done = false;
-                    accounts.forEach(function (enemy) {
-                        if (!done && uuid != enemy && game.byAccount[enemy].length > 0) {
-                            // TODO add orbit command
-                            cmd('shoot', { subject: key, target: game.byAccount[enemy][0] });
-                            done = true;
-                        }
-                    });
-                
-                }
-            }
-        });
-    });
-}
-
 game.on('ready', function() {
-    console.log("game ready");
-
-    setInterval(autoSpawn, 1000);
-    setInterval(autoTargetEnemy, 1000);
+    console.log(game.world);
+    ws.terminate();
 });
