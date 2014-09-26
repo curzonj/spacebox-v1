@@ -13,3 +13,6 @@
 [submodule "tech"]
 	path = tech
 	url = git@github.com:curzonj/spacebox-tech.git
+[submodule "agents"]
+	path = agents
+	url = git@github.com:curzonj/spacebox-npc-agent.git
