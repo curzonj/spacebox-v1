@@ -16,3 +16,6 @@
 [submodule "agents"]
 	path = agents
 	url = git@github.com:curzonj/spacebox-npc-agent.git
+[submodule "ui"]
+	path = ui
+	url = git@github.com:curzonj/spacebox-ui.git
