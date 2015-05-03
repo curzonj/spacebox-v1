@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+for i in $(git status | grep 'modified:' | awk '{ print $2 }'); do
+        [ -d $i ] && (
+                cd $i
+                git commit -a -m "fixes"
+                git push
+        )
+done
+
+git commit -a -m 'fixes'
+git push
