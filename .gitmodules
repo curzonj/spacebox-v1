@@ -19,3 +19,6 @@
 [submodule "ui"]
 	path = ui
 	url = git@github.com:curzonj/spacebox-ui.git
+[submodule "map"]
+	path = map
+	url = https://github.com/curzonj/spacebox-map
