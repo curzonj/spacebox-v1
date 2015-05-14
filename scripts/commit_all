@@ -1,12 +1,17 @@
 #!/usr/bin/env bash
 
+msg="fixes"
+if [ ! -z "$1" ]; then
+        msg="$1"
+fi
+
 for i in $(git status | grep 'modified:' | awk '{ print $2 }'); do
         [ -d $i ] && (
                 cd $i
-                git commit -a -m "fixes"
+                git commit -a -m "$msg"
                 git push
         )
 done
 
-git commit -a -m 'fixes'
+git commit -a -m "$msg"
 git push
