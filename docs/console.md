@@ -14,7 +14,7 @@
 * This returns the inventory. After any command with `then(logit)` runs the result will be accessible in `ret`.
 
 	`
-	C.request("tech", 'GET', 200, '/inventory').then(logit)
+	C.request("tech", 'GET', 200, '/inventory').then(logit).fail(logit)
 	`
 
 * Start a build job
