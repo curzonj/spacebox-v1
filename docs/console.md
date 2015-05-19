@@ -1,3 +1,5 @@
+Also checkout this file for examples: https://github.com/curzonj/spacebox-npc-agent/blob/master/src/common_setup.js
+
 * This will show you the current state of the world/spodb as the console agent understands it from the websockets stream.
 
 	`world`
@@ -62,4 +64,11 @@
 	`
 	C.request('tech', 'post', 200, '/facilities', { container_id: '08569710-fde8-11e4-af81-358649381d17' }).then(logit).fail(logit)
 	`
+	
+* Shoot something.
+
+	`
+	cmd('shoot', { subject: uuid, target: other_uuid, })
+	`
+
 	
