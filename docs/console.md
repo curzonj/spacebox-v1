@@ -50,4 +50,16 @@
 		slice: 'default',
 		blueprint: 'uuid'
 	}).then(logit);
+	
+* When you refit a structure or ship and remove only some of a blueprint, the related facilities are disabled and you have to pick which one to delete.
+
 	`
+	C.request('tech', 'delete', 204, '/facilities/106e8fac-fde8-11e4-898a-6003089d765e').then(logit).fail(logit)
+	`
+	
+* After you delete the facilities, make another call to get the system to reenable the remaining facilities.
+
+	`
+	C.request('tech', 'post', 200, '/facilities', { container_id: '08569710-fde8-11e4-af81-358649381d17' }).then(logit).fail(logit)
+	`
+	
