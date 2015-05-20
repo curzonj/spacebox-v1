@@ -56,7 +56,8 @@ Also checkout this file for examples: https://github.com/curzonj/spacebox-npc-ag
 		inventory: 'uuid',
 		slice: 'default',
 		blueprint: 'uuid'
-	}).then(logit);
+	}).then(logit)
+	`
 	
 * When you refit a structure or ship and remove only some of a blueprint, the related facilities are disabled and you have to pick which one to delete.
 
