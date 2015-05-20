@@ -21,7 +21,7 @@ Once you have the console open you can run a basic demo command:
 basic_setup()
 ```
 
-That will script a basic start to your game by building an outpost for you. You can reset your game world and try over and over again or read the file to see the commands and run time yourself.
+That will script a basic start to your game by building an outpost for you. As you can see, it prints out tons of undocumented debug data about what it's seeing. You can reset your game world and try over and over again or read the file to see the commands and run time yourself.
 
 ```
 cmd('resetAccount')
