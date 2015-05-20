@@ -7,11 +7,16 @@ Also checkout this file for examples: https://github.com/curzonj/spacebox-npc-ag
 * A list of all blueprints.
 
 	`blueprints`
+	
+* If you've played with stuff before, you may want to reset your account. This will delete any ships, structures, inventories, etc in the game universe on your account.
+
+	`
+	cmd('resetAccount')
+	`
 
 * This spawns a starter ship for you with some stuff in it.
 
 	`cmd('spawnStarter')`
-
 	
 * This returns the inventory. After any command with `then(logit)` runs the result will be accessible in `ret`.
 
