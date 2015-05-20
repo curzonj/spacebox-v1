@@ -5,7 +5,7 @@ You may want to read the following, eventually:
 * [The Introduction](./introduction.md)
 * [The (Incomplete) Console Reference](./console.md)
 
-First go to the UI and get your account credentials by authenticating via Google auth: [https://curzonj.github.io](https://curzonj.github.io) Be pacient as Heroku un-idles the dyno. Also the javascript console is useful for finding my latest error if it really doesn't work.
+First go to the UI and get your account credentials by authenticating via Google auth: [https://curzonj.github.io](https://curzonj.github.io) Be patient as Heroku un-idles the dyno. Also the javascript console is useful for finding my latest error if it really doesn't work.
 
 You need to have nodejs and npm installed before you begin.
 
