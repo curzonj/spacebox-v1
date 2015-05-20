@@ -27,4 +27,4 @@ That will script a basic start to your game by building an outpost for you. You 
 cmd('resetAccount')
 ```
 
-More details about the game and the console are found in the introduction and console referenec listed above.
+More details about the game and the console are found in the introduction and console reference listed above.
