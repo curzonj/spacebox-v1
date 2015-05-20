@@ -32,7 +32,7 @@ The TL;DR is that you can receive resources, build ships and space stations, mov
 * You `deploy` the scaffold, `dock` with it, transfer some metal to the scaffold, then start a job to `construct` a `Basic Outpost`.
 * While that happens you can start 2 more jobs to build `modules`. The only two current modules are a `Factory` and an `Ore Mine`.
 * Currently only the starter ship can refine `Ore` to `Metal`.
-* The factory can build fighters and scaffolds at the moment.
+* The factory can build everything.
 * When you build a ship it starts as just a counter in the inventory. To make it a fully defined ship with a uuid that you can undock you have to unpack it.
 * Ships can `scanWormholes` which will expose wormholes in the world state. You can then tell a ship to `jumpWormhole` to move it to another solar system.
 * Wormholes have a short TTL which is certain to change as I tune the system. As of this writing it's 15 seconds, but I plan on moving it to 2 minutes shortly.
