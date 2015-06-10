@@ -5,7 +5,7 @@
 	path = auth
 	url = git@github.com:curzonj/spacebox-auth.git
 [submodule "tech"]
-	path = tech
+	path = api
 	url = git@github.com:curzonj/spacebox-tech.git
 [submodule "agents"]
 	path = agents
