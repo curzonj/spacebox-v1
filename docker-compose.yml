@@ -1,0 +1,14 @@
+graylog:
+    image: graylog2/allinone
+    volumes:
+        - /var/opt/graylog/data
+        - ./logs/graylog:/var/log/graylog
+    ports:
+        - "9000:9000"
+        - "12201:12201/udp"
+        - "5555:5555"
+    env_file: .env.graylog
+redis:
+    image: redis
+    ports:
+        - "6379:6379"

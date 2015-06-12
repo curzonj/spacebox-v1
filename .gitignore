@@ -1,4 +1,6 @@
-.env
+.env*
 logs/*
 npm-debug.log
 dump.rdb
+/graylog/data
+/graylog/logs
