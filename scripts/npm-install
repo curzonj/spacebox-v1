@@ -1,0 +1,13 @@
+#!/bin/bash
+
+for i in 3dsim agents api auth common-native common ui; do
+        pushd $i
+        npm install
+        if [ -d node_modules/spacebox-common ]; then
+                npm link spacebox-common
+        fi
+        if [ -d node_modules/spacebox-common-native ]; then
+                npm link spacebox-common-native
+        fi
+        popd
+done
