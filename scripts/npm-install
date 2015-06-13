@@ -2,6 +2,10 @@
 
 for i in 3dsim agents api auth common-native common ui; do
         pushd $i
+        rm -f node_modules
+        vdir="node_modules.$(node --version)"
+        mkdir -p $vdir
+        ln -s $vdir node_modules
         npm install
         if [ -d node_modules/spacebox-common ]; then
                 npm link spacebox-common
