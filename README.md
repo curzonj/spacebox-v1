@@ -22,6 +22,16 @@ docker-compose up -d
 3. Add a GELF UDP input on port 12201
 3. Add a Raw TCP input on port 5555
 
+### Profiling and Performance
+
+#### wtf
+
+* Add `WTF = require('spacebox-common/src/tracing-shim')`
+* Add `WTF.trace.node.start({ })` when your app is ready to
+  take requests
+* Add `WTF=1` at the beginning of the command in the
+  Procfile only when you want to run the profiling
+
 ## Development (outdated)
 
 You'll need nodejs either forman or [forego](https://github.com/ddollar/forego) installed.
