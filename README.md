@@ -26,7 +26,7 @@ docker-compose up -d
 
 #### wtf
 
-* Add `WTF = require('spacebox-common/src/tracing-shim')`
+* Add `WTF = require('wtf-shim')`
 * Add `WTF.trace.node.start({ })` when your app is ready to
   take requests
 * Add `WTF=1` at the beginning of the command in the
