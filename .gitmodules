@@ -15,7 +15,7 @@
 	url = git@github.com:curzonj/spacebox-ui.git
 [submodule "common"]
 	path = common
-	url = git@github.com:curzonj/spacebox-common.git
+	url = git@github.com:curzonj/spacebox-nodejs-common.git
 [submodule "common-native"]
-	path = common
+	path = common-native
 	url = git@github.com:curzonj/spacebox-nodejs-common-native.git
