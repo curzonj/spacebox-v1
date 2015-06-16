@@ -13,3 +13,9 @@
 [submodule "ui"]
 	path = ui
 	url = git@github.com:curzonj/spacebox-ui.git
+[submodule "common"]
+	path = common
+	url = git@github.com:curzonj/spacebox-common.git
+[submodule "common-native"]
+	path = common
+	url = git@github.com:curzonj/spacebox-common-native.git
