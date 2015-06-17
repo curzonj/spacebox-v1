@@ -11,37 +11,36 @@ I will try to maintain a [changelog](../CHANGELOG.md) that you can read to know 
 
 Spacebox is composed of 3 services:
 
-* 3dsim - You connect to this via websockets. It sends messages about the state of space around you and you send commands that change that space, like docking and shooting.
-* tech - You make REST api calls to this to manipulate inventory and start jobs. It also has a websocket endpoint that you can receive realtime updates from about the progress of jobs and changes to facilities.
+* 3dsim - You connect to this via websockets. It sends messages about the state of space around you.
+* api - You make REST api calls to this to manipulate the game in any way. It also has a websocket endpoint that you can receive realtime updates from about the progress of jobs and changes to facilities.
 * auth - You request a Json Web Token from here and pass it as `Bearer` authentication to the other services.
 
-These services are all written in nodejs because at the time I wanted to work in the same language on the backend as I was using for the three.js frontend. The apps are deployed to heroku using postgresql for persistence.
+These services are all written in nodejs because at the time I wanted to work in the same language on the backend as I was using for the three.js frontend. The apps are deployed to heroku using postgresql for persistence and redis for publishing state between the components.
 
 Friends, if you want collaborator rights on the apps for debugging the endless bugs you'll experience or pushing fixes ping me.
 
 
 #### Current Game Design
 
-The TL;DR is that you can receive resources, build ships and space stations, move your ships through wormholes, and blow thnigs up.
+The TL;DR is that you can receive resources, build ships and space stations, move your ships through wormholes, research new blueprints, and blow things up.
 
 * You can spawn a single starter ship. You'll be able to spawn another each time your reset your game account. Resetting your game account deletes everything of yours in the game world.
-* Your ship has a `position` and a `solar_system`. Position is basically ignored right now, but you can only see things in the same solar_system as you.
+* Your ship has a `position` and a `solar_system`. You can only see things, dock, or jump through a wormhole from a certain range. Most things right now are +/- 20 on x,y,z and your sight range is 10.
 * Your ship has an `inventory` which has `facilities`.
 * Inventories have slices. The plan is to use them for organization. Right now basically everything just refers to the `default` slice.
-* Your starter ship starts off with metal in the inventory. You can use that to start a `job` in the facility in your ship to make a `scaffold`.
-* You `deploy` the scaffold, `dock` with it, transfer some metal to the scaffold, then start a job to `construct` a `Basic Outpost`.
-* While that happens you can start 2 more jobs to build `modules`. The only two current modules are a `Factory` and an `Ore Mine`.
-* Currently only the starter ship can refine `Ore` to `Metal`.
-* The factory can build everything.
-* When you build a ship it starts as just a counter in the inventory. To make it a fully defined ship with a uuid that you can undock you have to unpack it.
+* Your starter ship starts off with metal in the inventory. You can use that to start a `job` in the facility in your ship to make a `Space Crate` and another to make a `Factory` module.
+* You `deploy` the Space Crate, `dock` with it, transfer some metal and the module to the space crate, then start a `construction` job to setup the factory in the space crate. Now you have another facility to run jobs at.
+* The factory can build everything depending on the size of the factory and the size of the object.
+* When you build a ship it starts as just a counter in the inventory. To make it a fully defined ship with a uuid you either have to undock one or unpack one of that uuid.
 * Ships can `scanWormholes` which will expose wormholes in the world state. You can then tell a ship to `jumpWormhole` to move it to another solar system.
-* Wormholes have a short TTL which is certain to change as I tune the system. As of this writing it's 15 seconds, but I plan on moving it to 2 minutes shortly.
-* There are 100 solar systems and each one has about 4 wormholes at a time. That should be enough to give you places to hide and run away. 
+* Wormholes have a short TTL which is certain to change as I tune the system. As of this writing it's 30 seconds, but I plan on moving it to 2 minutes shortly.
+* There are lots of solar systems and each one has about 4 wormholes at a time. That should be enough to give you places to hide and run away. 
 * Ship weapons do a certain amount of damage per world tick (about 80ms). You tell your ship to `shoot` something else and when it's `health` drops to zero it will be destroyed. You'll receive a notification via world state.
 * When something disappears, in world state or facilities, you'll get an update which `tombstone=true`, and for world state, `tombstone_cause=SOMETHING`. A tombstone record is the last update you'll receive for an object and it's assumed you delete it from your state tracking.
+* You can spend metal on research jobs that produce new blueprints with better stats. These stats are based on polynomial functions that determine the resulting cost to build the item.
 
 
-The definition of everything in the game world and what can build what comes from [this file](https://github.com/curzonj/spacebox-tech/blob/master/src/blueprint_demo.js) until the research system is built.
+The definition of everything in the game world comes from [these files in github](https://github.com/curzonj/spacebox-tech/tree/master/data). Your bots/scripts can also fetch this and other data from [https://spacebox-tech.herokuapp.com/specs](https://spacebox-tech.herokuapp.com/specs).
 
 #### Reading the code 
 
@@ -49,20 +48,21 @@ The easiest way to interact with the game or to figure out how to write your own
 
 * First thing you'll notice is that uuids are everywhere. Everything is represented by one. You'll see some helper methods used in the console to avoid hardcoding UUIDs in. You'll also see lots of UUIDs hardcoded.
 
-* This file is the actual console. It keeps track of the world state by processing websocket messages from 3dsim and tech.
+* This file is the actual console. It really does nothing except give you access to the helper functions that the scripts use.
 	
 	```
 	https://github.com/curzonj/spacebox-npc-agent/blob/master/console.js
 	```
 
-* This file scripts a number of different scenarios. It uses nodejs promises to orchestrate things. `ctx` refers to the console itself, so you can remove that when running the commands by hand.
+* This directory has a bunch of test bots that do something to make sure it works. They do it the real way and are things that normal users will want to do, so it's a good example. `ctx` refers to the console itself, so you can remove that when running the commands by hand.
 
 	```
-	https://github.com/curzonj/spacebox-npc-agent/blob/master/src/common_setup.js
+	https://github.com/curzonj/spacebox-npc-agent/blob/master/tests
 	```
 
-* This file is shared code across the project and contains the code for making API requests to the services in case you want to build your bots in another language.
+* These files provide all the helpers that the test bots and the UI use. `ctx` in the case of the console is the global object. Be aware when running it by hand, everything uses javascript promises which means that most return values don't actually mean anything. When in doubt, add `.then(logit).fail(logit)` to the end of a value.
 
 	```
-	https://github.com/curzonj/spacebox-nodejs-common/blob/master/main.js#L206
+	https://github.com/curzonj/spacebox-npc-agent/blob/master/src/helpers.js
+	https://github.com/curzonj/spacebox-nodejs-common/blob/master/client.js
 	```

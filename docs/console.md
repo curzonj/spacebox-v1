@@ -1,4 +1,8 @@
-Also checkout this file for examples: https://github.com/curzonj/spacebox-npc-agent/blob/master/src/common_setup.js
+This directory has a bunch of test bots that do something to make sure it works. They do it the real way and are things that normal users will want to do, so it's a good example. `ctx` refers to the console itself, so you can remove that when running the commands by hand.
+
+	```
+	https://github.com/curzonj/spacebox-npc-agent/blob/master/tests
+	```
 
 * This will show you the current state of the world/spodb as the console agent understands it from the websockets stream.
 
@@ -21,13 +25,13 @@ Also checkout this file for examples: https://github.com/curzonj/spacebox-npc-ag
 * This returns the inventory. After any command with `then(logit)` runs the result will be accessible in `ret`.
 
 	`
-	C.request("tech", 'GET', 200, '/inventory').then(logit).fail(logit)
+	client.request("api", 'GET', 200, '/inventory').then(logit).fail(logit)
 	`
 
 * Start a build job
 
 	`
-	C.request('tech', 'POST', 201, '/jobs', {
+	client.request('api', 'POST', 201, '/jobs', {
         target: what,
         facility: where,
         action: 'manufacture|refine|construct',
@@ -36,23 +40,32 @@ Also checkout this file for examples: https://github.com/curzonj/spacebox-npc-ag
     }).then(logit);
     `
 
-* Deploy a scaffold
+* Deploy something, a ship, a space crate, etc.
 
 	`cmd('deploy', { shipID: from_were, slice: 'default', blueprint: what })`
+	
+	OR
+	
+	`cmd('deploy', { shipID: from_were, slice: 'default', blueprint: vessel_blueprint_uuid, vessel_uuid: uuid })`
 	
 * Transfer inventory from one location to another.
 
 	`
-	C.request("tech", "POST", 204, "/inventory", [
-		{ inventory: from_where, slice: 'default', blueprint: what, quantity: how_many },
-		{ inventory: to_where, slice: 'default', blueprint: what, quantity: how_many }
-	]).then(logit);
+	client.request("api", "POST", 204, "/inventory", {
+        from_id: where_uuid, from_slice: 'default',
+        to_id: where_uuid, to_slice: 'default',
+        items: [{
+            blueprint: what_uuid, quantity: how_many
+        }, {
+            blueprint: what_uuid, quantity: how_many
+        }]
+    }).then(ctx.logit)
 	`
 
 * Unpack a ship to make a unique ship
 
 	`
-	C.request("tech", "POST", 200, "/ships", {
+	client.request("api", "POST", 200, "/items", {
 		inventory: 'uuid',
 		slice: 'default',
 		blueprint: 'uuid'
@@ -62,19 +75,19 @@ Also checkout this file for examples: https://github.com/curzonj/spacebox-npc-ag
 * When you refit a structure or ship and remove only some of a blueprint, the related facilities are disabled and you have to pick which one to delete.
 
 	`
-	C.request('tech', 'delete', 204, '/facilities/106e8fac-fde8-11e4-898a-6003089d765e').then(logit).fail(logit)
+	client.request('api', 'delete', 204, '/facilities/106e8fac-fde8-11e4-898a-6003089d765e').then(logit).fail(logit)
 	`
 	
 * After you delete the facilities, make another call to get the system to reenable the remaining facilities.
 
 	`
-	C.request('tech', 'post', 200, '/facilities', { container_id: '08569710-fde8-11e4-af81-358649381d17' }).then(logit).fail(logit)
+	client.request('api', 'post', 200, '/facilities', { container_id: '08569710-fde8-11e4-af81-358649381d17' }).then(logit).fail(logit)
 	`
 	
 * Shoot something.
 
 	`
-	cmd('shoot', { subject: uuid, target: other_uuid, })
+	cmd('shoot', { vessel: uuid, target: other_uuid, })
 	`
 
 	

@@ -7,24 +7,38 @@ You may want to read the following, eventually:
 
 First go to the UI and get your account credentials by authenticating via Google auth: [https://curzonj.github.io](https://curzonj.github.io) Be patient as Heroku un-idles the dyno. Also the javascript console is useful for finding my latest error if it really doesn't work.
 
-You need to have nodejs and npm installed before you begin.
+You need to have nodejs, npm, and either foreman or forego installed before you begin.
 
 ```
 git clone https://github.com/curzonj/spacebox-npc-agent agent
 cd agent
-node ./console.js https://spacebox-auth.herokuapp.com ACCOUNT_ID:SECRET
+cp sample.env heroku.env
+# Edit heroku.env with your account credentials
+foreman run -e heroku.env ./tests/construction.js
 ```
 
-Once you have the console open you can run a basic demo command:
+You should see a bunch of logs about building a Space Crate, launching it, and installing a factory in it. To play the game interactively, you can use the console.
 
 ```
-basic_setup()
+foreman run -e heroku.env ./console.js
 ```
 
-That will script a basic start to your game by building an outpost for you. As you can see, it prints out tons of undocumented debug data about what it's seeing. You can reset your game world and try over and over again or read the file to see the commands and run time yourself.
+Once you have the console open you can see what objects in space and objects in inventory the tests script left behind for you.
+
+```
+console.log(world)
+client.request('api', 'GET', 200, '/inventory').then(logit).fail(logit)
+```
+
+You can also reset your account spawn your seed ship again if you like:
 
 ```
 cmd('resetAccount')
+cmd('spawnStarter')
 ```
+
+This spawns a seed ship with an asteroid miner, factory, and research lab. Currently the asteroid miner produces ore without actually doing anything because there are no asteroids to mine specifically.
+
+What can you do with your seed ship? Look at the agent/tests/*.js files for ideas and examples.
 
 More details about the game and the console are found in the introduction and console reference listed above.
