@@ -34,7 +34,7 @@ This directory has a bunch of test bots that do something to make sure it works.
 	client.request('api', 'POST', 201, '/jobs', {
         target: what,
         facility: where,
-        action: 'manufacture|refine|construct',
+        action: 'manufacturing|refining|construction|research',
         quantity: how_many,
         slice: 'default'
     }).then(logit);
