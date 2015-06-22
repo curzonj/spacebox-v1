@@ -8,6 +8,15 @@ Spacebox is designed as an MMO to be hosted on servers. This is a repo to help y
 
 ## Development (Incomplete)
 
+
+### JWT Tokens
+
+You can generate a fake JWT token for use with Swagger-UI easily with:
+
+```
+forego run auth/bin/gen_token.js 6ab4433b-90cd-4a76-9eb0-be0be7c1646b
+```
+
 ### Graylog
 
 Graylog is for analyizing the game server while you develop.
