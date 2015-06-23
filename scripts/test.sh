@@ -5,6 +5,7 @@ set -x
 
 rm -f *.wtf-trace
 
+jq '"valid"' api/docs/swagger.json
 ./api/node_modules/swagger-tools/bin/swagger-tools validate -v api/docs/swagger.json
 
 forego run ./scripts/truncate.sh
