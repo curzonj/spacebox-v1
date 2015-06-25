@@ -12,6 +12,7 @@ You need to have nodejs, npm, and either foreman or forego installed before you 
 ```
 git clone https://github.com/curzonj/spacebox-npc-agent agent
 cd agent
+npm install
 cp sample.env heroku.env
 # Edit heroku.env with your account credentials
 foreman run -e heroku.env ./tests/construction.js
