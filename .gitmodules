@@ -19,3 +19,6 @@
 [submodule "common-native"]
 	path = common-native
 	url = git@github.com:curzonj/spacebox-nodejs-common-native.git
+[submodule "sim2"]
+	path = sim2
+	url = git@github.com:curzonj/spacebox-scala-sim2.git
